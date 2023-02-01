@@ -4,3 +4,9 @@ This is a Node.js application using the express framework and the MySQL library 
 
 Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Prerequisites
+Node.js
+npm
+MySQL Server
+Installing
+Clone the repository and run the following commands in the root directory of the project:
