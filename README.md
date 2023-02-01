@@ -36,4 +36,9 @@ User sign up
 User login
 Error handling for existing users and password mismatches
 
+Built With
+Node.js - JavaScript runtime built on Chrome's V8 JavaScript engine
+Express - Fast, unopinionated, minimalist web framework for Node.js
+MySQL - Open-source relational database management system
+
 
