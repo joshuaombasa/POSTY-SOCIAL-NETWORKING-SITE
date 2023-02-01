@@ -10,3 +10,20 @@ npm
 MySQL Server
 Installing
 Clone the repository and run the following commands in the root directory of the project:
+
+npm install
+
+This will install all the required dependencies for the project.
+
+Next, create a MySQL database and update the connection configuration object in the index.js file with your MySQL credentials.
+const connection = mysql.createConnection( {
+    host: 'localhost',
+    user:'root',
+    password: '',
+    database: 'posty'
+}) 
+
+Running the Application
+To start the application, run the following command:
+Running the Application
+To start the application, run the following command:
