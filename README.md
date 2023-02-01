@@ -29,5 +29,11 @@ Running the Application
 To start the application, run the following command:
 
 node index.js
+The application should now be running on http://localhost:4000.
+
+Features
+User sign up
+User login
+Error handling for existing users and password mismatches
 
 
