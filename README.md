@@ -27,3 +27,7 @@ Running the Application
 To start the application, run the following command:
 Running the Application
 To start the application, run the following command:
+
+node index.js
+
+
