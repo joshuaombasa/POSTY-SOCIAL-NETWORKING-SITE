@@ -1,3 +1,4 @@
+import { render } from "ejs";
 import express from "express"
 import mysql from "mysql"
 
@@ -34,7 +35,38 @@ app.get('/login', (req, res) => {
 
 // submit login form
 app.post('/login', (req, res) => {
-    res.render('/signup')
+    const user = {
+        email:req.body.email,
+        password: req.body.password
+    }
+
+    // check if user exists
+    let sql = 'SELECT * FROM users WHERE email = ?'
+    connection.query(
+        sql,
+        [user.email],
+        (error, results) => {
+            if (results.length > 0) {
+                // compare password subited with password stored in the db
+                if (user.password === results[0].password) {
+                    // grant access
+                    console.log('user successfully logged in')
+                } else {
+                    // incorrect password
+                    let error = true
+                    let message = 'Incorect Password'
+                    res.render('login', {
+                        user, error, message
+                    })
+                }
+            } else {
+                // user does not exist
+                let error = true
+                let message = 'Account does not exist.'
+                res.render('login',{user, error, message})
+            }
+        }
+    )
 })
 
 
