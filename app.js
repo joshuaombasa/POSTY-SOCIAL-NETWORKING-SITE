@@ -1,22 +1,42 @@
-import { render } from "ejs";
+
 import express from "express"
 import mysql from "mysql"
+import bcrypt from "bcrypt"
+import session  from "express-session"
 
 const app = express();
 
-const connection = mysql.createConnection( {
+const connection = mysql.createConnection({
     host: 'localhost',
-    user:'root',
+    user: 'root',
     password: '',
     database: 'posty'
-}) 
+})
+
+// prepare to use sessions
+app.use(session({
+    secret: 'siri ya watatu',
+    resave: true,
+    saveUninitialized: false
+}))
 
 app.set('view engine', 'ejs')
 
 app.use(express.static('public'))
 
 // config to access form information
-app.use(express.urlencoded({extended: false}))
+app.use(express.urlencoded({ extended: false }))
+
+// constantly check if the user is logged in, the function will be executed with every request made
+app.use((req, res, next) => {
+     if (req.session.userID === undefined) {
+        console.log('user not logged in')
+     } else {
+        console.log('user is logged in')
+     }
+// promp what to do after
+    next()
+})
 
 // homepage
 app.get('/', (req, res) => {
@@ -29,14 +49,14 @@ app.get('/login', (req, res) => {
         email: '',
         password: ''
     }
-    res.render('login', {user,error: false, message: ''})
+    res.render('login', { user, error: false, message: '' })
 })
 
 
 // submit login form
 app.post('/login', (req, res) => {
     const user = {
-        email:req.body.email,
+        email: req.body.email,
         password: req.body.password
     }
 
@@ -48,22 +68,32 @@ app.post('/login', (req, res) => {
         (error, results) => {
             if (results.length > 0) {
                 // compare password subited with password stored in the db
-                if (user.password === results[0].password) {
-                    // grant access
-                    console.log('user successfully logged in')
-                } else {
-                    // incorrect password
-                    let error = true
-                    let message = 'Incorect Password'
-                    res.render('login', {
-                        user, error, message
-                    })
-                }
+                bcrypt.compare(user.password, results[0].password, (error, isEqual) => {
+                    if (isEqual) {
+                        // grant access
+                        req.session.userID = results[0].u_id
+                        req.session.userName = results[0].username
+
+
+                        console.log('user successfully logged in')
+                    } else {
+                        // incorrect password
+                        let error = true
+                        let message = 'Incorect Password'
+                        res.render('login', {
+                            user, error, message
+                        })
+                    }
+                })
+
+
+
+
             } else {
                 // user does not exist
                 let error = true
                 let message = 'Account does not exist.'
-                res.render('login',{user, error, message})
+                res.render('login', { user, error, message })
             }
         }
     )
@@ -78,9 +108,9 @@ app.get('/signup', (req, res) => {
         fulname: '',
         email: '',
         password: '',
-        confirmPassword:''
+        confirmPassword: ''
     }
-    res.render('signup',{user, error: false, message:''})
+    res.render('signup', { user, error: false, message: '' })
 })
 
 // submit signup form
@@ -104,18 +134,23 @@ app.post('/signup', (req, res) => {
                     let error = true
                     let message = 'Accout already exists with the email provided'
 
-                    res.render('signup', {user, error, message})
+                    res.render('signup', { user, error, message })
                 } else {
-                    // create user
-                    let sql = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)'
-                    connection.query(
-                        sql,
-                        [user.fullname, user.email, user.password],
-                        (error, results) => {
-                            console.log('user successfully created')
-                        }
-                    )
-                    
+                    // hash password and create user
+                    bcrypt.hash(user.password, 10, (error, hash) => {
+                        let sql = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)'
+                        connection.query(
+                            sql,
+                            [user.fullname, user.email, hash],
+                            (error, results) => {
+                                console.log('user successfully created')
+                            }
+                        )
+                    })
+
+
+
+
                 }
             }
         )
@@ -124,7 +159,7 @@ app.post('/signup', (req, res) => {
         // passwords do not match
         let error = true
         let message = 'Passwords Mismatch'
-        res.render('signup', {user, error, message})
+        res.render('signup', { user, error, message })
     }
 })
 
