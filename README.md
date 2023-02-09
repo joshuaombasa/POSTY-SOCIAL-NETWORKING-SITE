@@ -8,3 +8,5 @@ The routes are defined to handle the different pages of the application such as 
 
 When a user submits the login form, the code will query the database to see if the user exists and then use bcrypt to compare the password entered by the user with the password stored in the database. If the passwords match, the user's session will be created with their user ID and username stored as session data.
 
+When a user submits the signup form, the code will first check if the user already exists in the database. If the user doesn't exist, the password entered by the user will be hashed using bcrypt and the user will be created in the database.
+
