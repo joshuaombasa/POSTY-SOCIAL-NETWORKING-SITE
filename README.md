@@ -6,3 +6,5 @@ In the code, you define an Express application, set up a connection to the MySQL
 The routes are defined to handle the different pages of the application such as the home page, login page, and signup page.
 
 
+When a user submits the login form, the code will query the database to see if the user exists and then use bcrypt to compare the password entered by the user with the password stored in the database. If the passwords match, the user's session will be created with their user ID and username stored as session data.
+
