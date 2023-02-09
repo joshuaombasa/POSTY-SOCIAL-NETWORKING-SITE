@@ -10,3 +10,4 @@ When a user submits the login form, the code will query the database to see if t
 
 When a user submits the signup form, the code will first check if the user already exists in the database. If the user doesn't exist, the password entered by the user will be hashed using bcrypt and the user will be created in the database.
 
+In conclusion, this code is a basic implementation of user authentication and session management in an Express application that uses a MySQL database.
