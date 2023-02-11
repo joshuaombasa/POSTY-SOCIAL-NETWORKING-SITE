@@ -1,16 +1,16 @@
 @font-face {
     font-family: mbold;
-    src: url(public/css/mbold.ttf);
+    src: url(mbold.ttf);
 }
 
 @font-face {
     font-family: mlight;
-    src: url(public/css/mlight.ttf);
+    src: url(mlight.ttf);
 }
 
 @font-face {
     font-family: mreg;
-    src: url(public/css/mreg.ttf);
+    src: url(mreg.ttf);
 }
 
 * {
@@ -71,4 +71,37 @@
 
 .access-point a:hover {
     text-decoration: underline;
+}
+
+.container {
+    padding: 0 150px;
+}
+
+header {
+    height: 60px;
+    background-color: #f2f2f2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+header h1 a {
+    text-decoration: none;
+    color: #0b0ba5;
+}
+
+nav li {
+    display: inline;
+    margin-left: 10px;
+}
+
+nav li:hover {
+    border-bottom: 2px solid #0b0ba5;
+}
+
+nav a {
+    text-decoration: none;
+    color: #0b0ba5;
+    font-size: 18px;
 }
