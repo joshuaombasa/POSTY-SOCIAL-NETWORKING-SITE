@@ -2,7 +2,7 @@
 import express from "express"
 import mysql from "mysql"
 import bcrypt from "bcrypt"
-import session  from "express-session"
+import session from "express-session"
 
 const app = express();
 
@@ -29,12 +29,15 @@ app.use(express.urlencoded({ extended: false }))
 
 // constantly check if the user is logged in, the function will be executed with every request made
 app.use((req, res, next) => {
-     if (req.session.userID === undefined) {
-        console.log('user not logged in')
-     } else {
-        console.log('user is logged in')
-     }
-// promp what to do after
+    if (req.session.userID === undefined) {
+        res.locals.isLoggedIn = false
+        res.locals.username = 'Guest'
+    } else {
+        res.locals.isLoggedIn = true
+        res.locals.username = req.session.username.toString().split(' ')[0]
+        
+    }
+    // promp what to do after
     next()
 })
 
@@ -72,10 +75,12 @@ app.post('/login', (req, res) => {
                     if (isEqual) {
                         // grant access
                         req.session.userID = results[0].u_id
-                        req.session.userName = results[0].username
+                        req.session.username = results[0].username
+                        console.log('user successfully logged in ')
+                        res.redirect('/')
 
 
-                        console.log('user successfully logged in')
+
                     } else {
                         // incorrect password
                         let error = true
@@ -162,6 +167,13 @@ app.post('/signup', (req, res) => {
         res.render('signup', { user, error, message })
     }
 })
+
+// logout
+app.get('/logout', (req,res)=> {
+    req.session.destroy(() => {
+        res.redirect('/')
+    })
+}) 
 
 
 app.listen(4000, () => {
