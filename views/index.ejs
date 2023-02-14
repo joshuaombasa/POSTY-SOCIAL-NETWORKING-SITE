@@ -1,8 +1,25 @@
 <%- include('partials/header')%>
-<%- include('partials/nav')  %>
-    <main class="container">
+
+    
+        <% if (locals.isLoggedIn) { %>
+        <%- include('partials/nav')  %>
+
+    <main class="container"> 
         <h2>Welcome <%= locals.username %></h2>
+
+        <form id="create-post" action="/create-a-post" method="post">
+            <textarea name="post" id="" cols="30" rows="2"></textarea>
+            <input type="submit" value="Create a post">
+        </form>
     </main>
+        <% } else { %>
+            <div class="not-logged-in">
+            <%- include('partials/nav')  %>
+
+            <h2>Engage with friends on <em>posty</em>.</h2>
+            </div>
+       <% } %>
+    
     
     
 <%- include('partials/footer')%>
