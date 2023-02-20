@@ -11,6 +11,17 @@
             <textarea name="post" id="" cols="30" rows="2"></textarea>
             <input type="submit" value="Create a post">
         </form>
+
+       <div class="posts">
+        <% posts.forEach(post => { %>
+            <div class="post">
+                <h3><%= post.username%></h3>
+                <p><%= post.post %></p>
+                <small><em><%= post.created_at.toString().split(' GMT')[0] %></em></small>
+            </div>
+          <% }) %>
+       </div>
+
     </main>
         <% } else { %>
             <div class="not-logged-in">
