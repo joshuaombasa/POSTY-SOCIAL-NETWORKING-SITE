@@ -43,7 +43,13 @@ app.use((req, res, next) => {
 
 // homepage
 app.get('/', (req, res) => {
-    res.render('index')
+    let sql = 'SELECT * FROM posts JOIN users ON posts.u_id_fk = users.u_id ORDER BY posts.created_at DESC'
+    connection.query(
+        sql, (error, results) => {
+            res.render('index', {posts: results})
+        }
+    )
+    
 })
 
 // display login form
@@ -148,7 +154,7 @@ app.post('/signup', (req, res) => {
                             sql,
                             [user.fullname, user.email, hash],
                             (error, results) => {
-                                console.log('user successfully created')
+                                res.redirect('/login')
                             }
                         )
                     })
