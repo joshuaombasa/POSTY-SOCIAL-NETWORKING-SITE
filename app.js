@@ -37,7 +37,7 @@ app.use((req, res, next) => {
         res.locals.username = req.session.username.toString().split(' ')[0]
         
     }
-    // promp what to do after
+    // prompt what to do after
     next()
 })
 
@@ -50,6 +50,54 @@ app.get('/', (req, res) => {
         }
     )
     
+})
+
+//homepage create a post
+app.post('/create-a-post', (req,res) => {
+    let sql = 'INSERT INTO posts (post, u_id_fk) VALUES (?,?)'
+    connection.query(
+        sql,
+        [req.body.post, req.session.userID],
+        (error, results) => {
+            res.redirect('/')
+        }
+    )
+})
+
+//homepage delete a post
+app.post('/delete-post/:id', (req,res) => {
+    let sql = 'DELETE FROM posts WHERE p_id = ?'
+    connection.query(
+        sql,
+        [req.params.id],
+        (error, result) => {
+            res.redirect('/')
+        }
+        )
+})
+
+// homepage like a post
+app.post('/like-post/:id', (req,res) => {
+    let sql = 'INSERT INTO likes (p_id_fk, u_id_fk) VALUES (?,?)'
+    connection.query(
+        sql,
+        [req.params.id, req.session.userID],
+        (error,results) => {
+            res.redirect('/')
+        }
+    )
+})
+
+// homepage unlike a post
+app.post('/unlike-post/:id', (req,res) => {
+    let sql  = 'DELETE FROM likes WHERE id = ?'
+    connection.query(
+        sql,
+        [req.params.id],
+        (error, results) => {
+            res.redirect('/')
+        }
+    )
 })
 
 // display login form
@@ -181,55 +229,9 @@ app.get('/logout', (req,res)=> {
     })
 }) 
 
-// create a post
-app.post('/create-a-post', (req,res) => {
-    let sql = 'INSERT INTO posts (post, u_id_fk) VALUES (?,?)'
-    connection.query(
-        sql,
-        [req.body.post, req.session.userID],
-        (error, results) => {
-            res.redirect('/')
-        }
-    )
-})
 
-// delete a post
-app.post('/delete-post/:id', (req,res) => {
-    let sql = 'DELETE FROM posts WHERE p_id = ?'
-    connection.query(
-        sql,
-        [req.params.id],
-        (error, result) => {
-            res.redirect('/')
-        }
-        )
-})
 
-// like a post
-app.post('/like-post/:id', (req,res) => {
-    let sql = 'INSERT INTO likes (p_id_fk, u_id_fk) VALUES (?,?)'
-    connection.query(
-        sql,
-        [req.params.id, req.session.userID],
-        (error,results) => {
-            res.redirect('/')
-        }
-    )
-})
-
-// unlike a post
-app.post('/unlike-post/:id', (req,res) => {
-    let sql  = 'DELETE FROM likes WHERE p_id_fk = ?'
-    connection.query(
-        sql,
-        [req.params.id],
-        (error, results) => {
-            res.redirect('/likes')
-        }
-    )
-})
-
-// view likes
+// likes: view likes
 app.get('/likes', (req,res) => {
     if (res.locals.isLoggedIn) {
         let sql = 'SELECT p_id, post, posts.created_at, u_id, username, picture FROM posts, users, likes WHERE posts.p_id = likes.p_id_fk AND posts.u_id_fk = users.u_id AND likes.u_id_fk = ?'
@@ -245,6 +247,46 @@ app.get('/likes', (req,res) => {
     } else {
         res.redirect('/login')
     }
+})
+
+// likes; Unlike a post
+app.post('/likes/unlike-post/:id', (req,res) => {
+    let sql  = 'DELETE FROM likes WHERE id = ?'
+    connection.query(
+        sql,
+        [req.params.id],
+        (error, results) => {
+            res.redirect('/likes')
+        }
+    )
+})
+
+//posts view own posts
+app.get('/posts', (req,res) => {
+    if (res.locals.isLoggedIn) {
+        let sql = 'SELECT p_id, post, posts.created_at, u_id, username, picture FROM posts JOIN users ON posts.u_id_fk = users.u_id WHERE posts.u_id_fk = ? ORDER BY posts.created_at DESC'
+        connection.query(
+            sql,
+            [req.session.userID],
+            (error,results) => {
+                res.render('posts', {posts: results, userID: req.session.userID })
+            }
+        )
+    } else {
+        res.redirect('/login')
+    }
+})
+
+// posts: delete a post
+app.post('/posts/delete-post/:id', (req,res) => {
+    let sql = 'DELETE FROM posts WHERE p_id = ?'
+    connection.query(
+        sql,
+        [req.params.id],
+        (error, result) => {
+            res.redirect('/posts')
+        }
+        )
 })
 
 app.listen(4000, () => {
