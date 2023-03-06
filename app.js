@@ -307,6 +307,25 @@ app.get('/profile/:id', (req, res) => {
     
 })
 
+// edit profile
+
+app.post('/edit-profile/:id', (req, res) => {
+    let sql = 'SELECT password FROM users WHERE u_id = ?'
+    connection.query(
+        sql,
+        [req.params.id],
+        (error, results) => {
+            bcrypt.compare(req.body.password, results[0].password, (error, isEqual) => {
+                if (isEqual) {
+                    console.log('update profile')
+                } else {
+                    console.log('incorect password')
+                }
+            })
+        }
+    )
+})
+
 app.listen(4000, () => {
     console.log("app is running")
 })
