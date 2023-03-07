@@ -298,7 +298,7 @@ app.get('/profile/:id', (req, res) => {
         sql,
         [req.params.id],
         (error, results) => {
-            res.render('profile', {user: results[0], userID:req.session.userID})
+            res.render('profile', {user: results[0], userID:req.session.userID, error: false})
         }
     )
     } else {
@@ -317,14 +317,30 @@ app.post('/edit-profile/:id', (req, res) => {
         (error, results) => {
             bcrypt.compare(req.body.password, results[0].password, (error, isEqual) => {
                 if (isEqual) {
-                    console.log('update profile')
+                    // update the profile with new details from the form
+                    let sql = 'UPDATE users SET username = ?, email = ?, phonenumber = ?, gender = ?, location = ? WHERE u_id = ?'
+                    connection.query(
+                        sql,
+                        [
+                            req.body.fullname,
+                            req.body.email,
+                            req.body.phonenumber,
+                            req.body.gender,
+                            req.body.location,
+                            Number(req.params.id)
+                        ],
+                        (error, results) => {
+                            
+                            res.redirect(`/profile/${req.params.id}`)
+                        }
+                    )
                 } else {
                     console.log('incorect password')
                 }
             })
         }
     )
-})
+}) 
 
 app.listen(4000, () => {
     console.log("app is running")
