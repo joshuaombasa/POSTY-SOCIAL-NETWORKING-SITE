@@ -13,7 +13,7 @@
            <%  if (user.u_id === userID) { %>
                <a href="" id="btn-edit">Edit profile</a>
                <div id="form">
-                <form action="/edit-profile/<%= user.u_id %>" method="post">
+                <form action="/edit-profile/<%= user.u_id %>" method="post" enctype="multipart/form-data">
                   <label for="">Full Name</label>
                   <input type="text" name="fullname" id="" value="<%= user.username %>">
                   <label for="">Email</label>
@@ -34,6 +34,8 @@
                   </select>
                   <label for="">Location</label>
                   <input type="text" name="location" id="" value="<%= user.location %>">
+                  <label for="">Profile picture</label>
+                  <input type="file" name="picture" id="">
                   <label for="">Password</label>
                   <input type="password" name="password" id="" required>
 
