@@ -3,6 +3,7 @@ import express from "express"
 import mysql from "mysql"
 import bcrypt from "bcrypt"
 import session from "express-session"
+import multer from "multer"
 
 const app = express();
 
@@ -12,6 +13,8 @@ const connection = mysql.createConnection({
     password: '',
     database: 'posty'
 })
+
+const upload = multer({dest: 'public/images/profile_pictures'})
 
 // prepare to use sessions
 app.use(session({
@@ -309,7 +312,7 @@ app.get('/profile/:id', (req, res) => {
 
 // edit profile
 
-app.post('/edit-profile/:id', (req, res) => {
+app.post('/edit-profile/:id', upload.single('picture'), (req, res) => {
     let sql = 'SELECT password FROM users WHERE u_id = ?'
     connection.query(
         sql,
@@ -318,22 +321,47 @@ app.post('/edit-profile/:id', (req, res) => {
             bcrypt.compare(req.body.password, results[0].password, (error, isEqual) => {
                 if (isEqual) {
                     // update the profile with new details from the form
-                    let sql = 'UPDATE users SET username = ?, email = ?, phonenumber = ?, gender = ?, location = ? WHERE u_id = ?'
-                    connection.query(
-                        sql,
-                        [
-                            req.body.fullname,
-                            req.body.email,
-                            req.body.phonenumber,
-                            req.body.gender,
-                            req.body.location,
-                            Number(req.params.id)
-                        ],
-                        (error, results) => {
-                            
-                            res.redirect(`/profile/${req.params.id}`)
-                        }
-                    )
+                    let sql = ''
+
+                     // check if file was uploaded 
+
+                    if (req.file) {
+                        sql = 'UPDATE users SET username = ?, email = ?, phonenumber = ?, gender = ?, location = ?, picture = ? WHERE u_id = ?'
+                        connection.query(
+                            sql,
+                            [
+                                req.body.fullname,
+                                req.body.email,
+                                req.body.phonenumber,
+                                req.body.gender,
+                                req.body.location,
+                                req.file.filename,
+                                Number(req.params.id)
+                            ],
+                            (error, results) => {
+                                
+                                res.redirect(`/profile/${req.params.id}`)
+                            }
+                        )
+                    } else {
+                        sql = 'UPDATE users SET username = ?, email = ?, phonenumber = ?, gender = ?, location = ? WHERE u_id = ?'
+                        connection.query(
+                            sql,
+                            [
+                                req.body.fullname,
+                                req.body.email,
+                                req.body.phonenumber,
+                                req.body.gender,
+                                req.body.location,
+                                Number(req.params.id)
+                            ],
+                            (error, results) => {
+                                
+                                res.redirect(`/profile/${req.params.id}`)
+                            }
+                        )
+                    }
+                    
                 } else {
                     console.log('incorect password')
                 }
