@@ -24,11 +24,21 @@
                     <p><%= post.post %></p>
                     <div>
                         <div class="btns">
-
-                            <!--show like button if post is not liked -->
+                            <!-- check if post is liked -->
+                            <% if (likes.some(like => like.p_id_fk === post.p_id)) { %>
+                                <!-- show unlike button -->
+                                <form action="/unlike-post/<%= post.p_id %>" method="post">
+                                    <input type="submit" value="unlike">
+                                </form>
+                            <% } else { %>
+                                <!-- show like button -->
+                                <!--show like button if post is not liked -->
                             <form action="/like-post/<%= post.p_id %>" method="post">
                                 <input type="submit" value="Like">
                             </form>
+                            <% } %>
+
+                            
 
                             <!-- show unlike button if posts is not liked already -->
 
