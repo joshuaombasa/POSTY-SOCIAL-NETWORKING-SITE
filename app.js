@@ -274,7 +274,7 @@ app.post('/likes/unlike-post/:id', (req,res) => {
     )
 })
 
-//posts view own posts
+// view own posts
 app.get('/posts', (req,res) => {
     if (res.locals.isLoggedIn) {
         let sql = 'SELECT p_id, post, posts.created_at, u_id, username, picture FROM posts JOIN users ON posts.u_id_fk = users.u_id WHERE posts.u_id_fk = ? ORDER BY posts.created_at DESC'
