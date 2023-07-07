@@ -146,8 +146,6 @@ app.post('/login', (req, res) => {
                         console.log('user successfully logged in ')
                         res.redirect('/')
 
-
-
                     } else {
                         // incorrect password
                         let error = true
@@ -159,8 +157,6 @@ app.post('/login', (req, res) => {
                 })
 
 
-
-
             } else {
                 // user does not exist
                 let error = true
@@ -170,8 +166,6 @@ app.post('/login', (req, res) => {
         }
     )
 })
-
-
 
 
 // display signup form
@@ -219,10 +213,7 @@ app.post('/signup', (req, res) => {
                             }
                         )
                     })
-
-
-
-
+                    
                 }
             }
         )
