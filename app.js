@@ -396,7 +396,7 @@ app.post('/edit-profile/:id', upload.single('picture'), (req, res) => {
     )
 }) 
 
-app.listen(4000, () => {
+app.listen(9000, () => {
     console.log("app is running")
 })
 
