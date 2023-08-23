@@ -1,10 +1,8 @@
-
-import express from "express"
-import mysql from "mysql"
-import bcrypt from "bcrypt"
-import session from "express-session"
-import multer from "multer"
-
+const express = require('express')
+const mysql = require('mysql')
+const bcrypt = require('bcrypt')
+const session  =require('express-session')
+const multer = require('multer')
 const app = express();
 
 const connection = mysql.createConnection({
