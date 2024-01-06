@@ -1,7 +1,7 @@
-const express = require('express')
+const express = require("express")
 const mysql = require('mysql')
 const bcrypt = require('bcrypt')
-const session  =require('express-session')
+const session  = require('express-session')
 const multer = require('multer')
 const app = express();
 
@@ -143,7 +143,6 @@ app.post('/login', (req, res) => {
                         req.session.username = results[0].username
                         console.log('user successfully logged in ')
                         res.redirect('/')
-
                     } else {
                         // incorrect password
                         let error = true
@@ -196,7 +195,7 @@ app.post('/signup', (req, res) => {
                 if (results.length > 0) {
                     // user exists
                     let error = true
-                    let message = 'Accout already exists with the email provided'
+                    let message = 'Account already exists with the email provided'
 
                     res.render('signup', { user, error, message })
                 } else {
@@ -394,7 +393,7 @@ app.post('/edit-profile/:id', upload.single('picture'), (req, res) => {
     )
 }) 
 
-app.listen(9000, () => {
+app.listen(3000, () => {
     console.log("app is running")
 })
 
